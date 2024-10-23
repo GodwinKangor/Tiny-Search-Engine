@@ -1,5 +1,7 @@
+### EXTENSION USED ###
+
 # CS50 TSE
-## Student name (GitHub username)
+## Godwin Kangor  (GodwinKangor)
 
 The assignment and Specs are in a [public repo](https://github.com/CS50DartmouthFA24/labs/tse).
 Do not clone that repo; view it on GitHub.
