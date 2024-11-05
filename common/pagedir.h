@@ -19,4 +19,9 @@ bool pagedir_init(const char* pageDirectory);
  */
 void pagedir_save(const webpage_t* page, const char* pageDirectory, const int docID);
 
+char* create_pathname(const char* filename, const char* pageDirectory);
+bool pagedir_validate(const char* pageDirectory);
+webpage_t* pagedir_load(FILE* fp);
+
+
 #endif // __PAGEDIR_H__
