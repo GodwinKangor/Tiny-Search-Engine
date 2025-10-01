@@ -1,4 +1,3 @@
-### EXTENSION USED ###
 
 # CS50 TSE
 ## Godwin Kangor  (GodwinKangor)
