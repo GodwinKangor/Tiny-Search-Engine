@@ -2,7 +2,7 @@
 # CS50 TSE
 ## Godwin Kangor  (GodwinKangor)
 
-```markdown
+
 # Tiny Search Engine (TSE)
 
 ## 📖 Overview
@@ -15,7 +15,7 @@ It demonstrates the fundamental components of a search engine:
 ```
 ## 🛠️ Project Structure
 
-```
+```markdown
 tiny-search-engine/
 │
 ├── crawler/ # Crawls web pages starting from a seed URL
