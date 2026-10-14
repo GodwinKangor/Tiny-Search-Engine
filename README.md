@@ -122,11 +122,6 @@ Provided test cases (like `letters` or `toscrape`) verify correctness.
 
 Developed by **Godwin Kangor** as part of **CS50 Tiny Search Engine Project**.
 
-```
 
----
-
-👉 Do you want me to also add a **“Quick Start” section** at the top (so someone cloning your repo can run it immediately), or keep it as-is since this looks more like a CS50 grading README?
-```
 
 
