@@ -1,0 +1,289 @@
+ml () {  module ml "$@"
+}
+module () {  local _mlredir=1;
+ if [ -n "${MODULES_REDIRECT_OUTPUT+x}" ]; then
+ if [ "$MODULES_REDIRECT_OUTPUT" = '0' ]; then
+ _mlredir=0;
+ else
+ if [ "$MODULES_REDIRECT_OUTPUT" = '1' ]; then
+ _mlredir=1;
+ fi;
+ fi;
+ fi;
+ case " $@ " in 
+ *' --no-redirect '*)
+ _mlredir=0
+ ;;
+ *' --redirect '*)
+ _mlredir=1
+ ;;
+ esac;
+ if [ $_mlredir -eq 0 ]; then
+ _module_raw "$@";
+ else
+ _module_raw "$@" 2>&1;
+ fi
+}
+_module_raw () {  eval "$(/usr/bin/tclsh8.6 '/usr/lib/x86_64-linux-gnu/modulecmd.tcl' bash "$@")";
+ _mlstatus=$?;
+ return $_mlstatus
+}
+#!/bin/bash
+# testing.sh
+# Author: Godwin Kangor
+# Date: Nov 04, 2024
+# Description: Bash script to test querier.c 
+
+# Paths to directories and files
+PAGE_DIRECTORY="$HOME/cs50-dev/tse-GodwinKangor/data/letters-3"
+INDEX_FILE="$HOME/cs50-dev/tse-GodwinKangor/indexer/index.out"
+INVALID_DIRECTORY="$HOME/cs50-dev/tse-GodwinKangor/data/invalid-directory"
+INVALID_INDEX_FILE="$HOME/cs50-dev/tse-GodwinKangor/indexer/invalid_index.out"
+
+# Header
+echo -e "\nRunning tests for querier.c\n"
+
+Running tests for querier.c
+
+echo -e "===============================================\n"
+===============================================
+
+
+# Testing with an invalid pageDirectory
+echo -e "\nTESTING: Invalid pageDirectory path"
+
+TESTING: Invalid pageDirectory path
+echo "Query: \"page\""
+Query: "page"
+echo "page" | ./querier "$INVALID_DIRECTORY" "$INDEX_FILE"
+File does not exist or is inaccessible
+Error: Invalid pageDirectory path
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/invalid-directory/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/invalid-directory/.crawler
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+# Testing with an invalid indexFile
+echo -e "\nTESTING: Invalid indexFile path"
+
+TESTING: Invalid indexFile path
+echo "Query: \"page\""
+Query: "page"
+echo "page" | ./querier "$PAGE_DIRECTORY" "$INVALID_INDEX_FILE"
+Error: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/indexer/invalid_index.out is not readable
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryecho -e "-----------------------------------------------"
+-----------------------------------------------
+
+# Testing invalid use of AND/OR
+echo -e "\nTESTING: 'AND' at the beginning of the query"
+
+TESTING: 'AND' at the beginning of the query
+echo "Query: \"and\""
+Query: "and"
+echo "and" | ./querier "$PAGE_DIRECTORY" "$INDEX_FILE"
+Invalid input: 'and' cannot be the first
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryQuery: and 
+
+Query: 
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+echo -e "\nTESTING: 'OR' at the beginning of the query"
+
+TESTING: 'OR' at the beginning of the query
+echo "Query: \"or\""
+Query: "or"
+echo "or" | ./querier "$PAGE_DIRECTORY" "$INDEX_FILE"
+Invalid input: 'or' cannot be the first
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryQuery: or 
+
+Query: 
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+echo -e "\nTESTING: 'AND' at the end of the query"
+
+TESTING: 'AND' at the end of the query
+echo "Query: \"home And\""
+Query: "home And"
+echo "home And" | ./querier "$PAGE_DIRECTORY" "$INDEX_FILE"
+Invalid input: 'and' cannot be the last
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryQuery: home and 
+
+Query: 
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+echo -e "\nTESTING: 'OR' at the end of the query"
+
+TESTING: 'OR' at the end of the query
+echo "Query: \"home or\""
+Query: "home or"
+echo "home or" | ./querier "$PAGE_DIRECTORY" "$INDEX_FILE"
+Invalid input: 'or' cannot be the last
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryQuery: home or 
+
+Query: 
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+echo -e "\nTESTING: 'AND' adjacent to 'OR'"
+
+TESTING: 'AND' adjacent to 'OR'
+echo "Query: \"home and Or for\""
+Query: "home and Or for"
+echo "home and Or for" | ./querier "$PAGE_DIRECTORY" "$INDEX_FILE"
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryQuery: home and Or for 
+No documents match.
+
+
+Query: 
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+# Valid queries with expected results
+echo -e "\nRunning valid queries\n"
+
+Running valid queries
+
+
+echo -e "\nVALID QUERY: Simple single word query"
+
+VALID QUERY: Simple single word query
+echo "Query: \"page\""
+Query: "page"
+echo "page" | ./querier "$PAGE_DIRECTORY" "$INDEX_FILE"
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryQuery: page 
+Matches 1 documents (ranked): 
+score:	1 doc	1: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+
+
+Query: 
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+echo -e "\nVALID QUERY: Query with 'OR' operator"
+
+VALID QUERY: Query with 'OR' operator
+echo "Query: \"page or huffman\""
+Query: "page or huffman"
+echo "page or huffman" | ./querier "$PAGE_DIRECTORY" "$INDEX_FILE"
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryQuery: page or huffman 
+Matches 2 documents (ranked): 
+score:	1 doc	6: http://cs50tse.cs.dartmouth.edu/tse/letters/H.html
+score:	1 doc	1: http://cs50tse.cs.dartmouth.edu/tse/letters/index.html
+
+
+Query: 
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+echo -e "\nVALID QUERY: Query with 'AND' operator"
+
+VALID QUERY: Query with 'AND' operator
+echo "Query: \"biology and fast\""
+Query: "biology and fast"
+echo "biology and fast" | ./querier "$PAGE_DIRECTORY" "$INDEX_FILE"
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryQuery: biology and fast 
+Matches 0 documents (ranked): 
+
+
+Query: 
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+echo -e "\nVALID QUERY: Combined 'AND' and 'OR' operators"
+
+VALID QUERY: Combined 'AND' and 'OR' operators
+echo "Query: \"biology or fast\""
+Query: "biology or fast"
+echo "biology or fast" | ./querier "$PAGE_DIRECTORY" "$INDEX_FILE"
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryQuery: biology or fast 
+Matches 2 documents (ranked): 
+score:	1 doc	7: http://cs50tse.cs.dartmouth.edu/tse/letters/F.html
+score:	1 doc	9: http://cs50tse.cs.dartmouth.edu/tse/letters/C.html
+
+
+Query: 
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+echo -e "\nVALID QUERY: Complex query with 'AND' and 'OR'"
+
+VALID QUERY: Complex query with 'AND' and 'OR'
+echo "Query: \"biology and fast or search\""
+Query: "biology and fast or search"
+echo "biology and fast or search" | ./querier "$PAGE_DIRECTORY" "$INDEX_FILE"
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryQuery: biology and fast or search 
+Matches 2 documents (ranked): 
+score:	1 doc	8: http://cs50tse.cs.dartmouth.edu/tse/letters/D.html
+score:	1 doc	3: http://cs50tse.cs.dartmouth.edu/tse/letters/B.html
+
+
+Query: 
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+# Testing with invalid characters
+echo -e "\nTesting queries with invalid characters\n"
+
+Testing queries with invalid characters
+
+
+echo -e "\nINVALID CHARACTER TEST: Query with special characters"
+
+INVALID CHARACTER TEST: Query with special characters
+echo "Query: \"home ``\""
+Query: "home "
+echo "home ``" | ./querier "$PAGE_DIRECTORY" "$INDEX_FILE"
+Invalid character provided
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryQuery: home 
+
+Query: 
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+echo -e "\nINVALID CHARACTER TEST: Query starting with numbers/special chars"
+
+INVALID CHARACTER TEST: Query starting with numbers/special chars
+echo "Query: \"``3\""
+Query: "3"
+echo "``3" | ./querier "$PAGE_DIRECTORY" "$INDEX_FILE"
+Invalid character provided
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+Checking for file: /thayerfs/home/f006vzt/cs50-dev/tse-GodwinKangor/data/letters-3/.crawler
+valid directoryQuery: 
+
+Query: 
+echo -e "-----------------------------------------------"
+-----------------------------------------------
+
+# Summary
+echo -e "\nAll tests completed.\n"
+
+All tests completed.
+

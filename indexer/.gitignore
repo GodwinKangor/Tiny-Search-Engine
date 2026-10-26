@@ -1,0 +1,45 @@
+# CS50 recommended .gitignore file.
+
+# NFS files
+.nfs*
+
+# core dumps
+core
+
+# Object files and libraries
+*.o
+*.a
+a.out
+
+# Emacs backup and scratch files
+*~
+\#*\#
+.\#*
+
+# debugger symbols
+*.dSYM
+
+# MacOS stuff
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V*
+.Trashes
+
+###########################################################################
+# custom additions below here; see also .gitignore files in subdirectories.
+
+# Emacs file
+TAGS
+
+# Exclude generated executables and compiled binaries
+indexer
+indextest
+
+# Exclude data and output files
+index.out
+index.copy
+
+
